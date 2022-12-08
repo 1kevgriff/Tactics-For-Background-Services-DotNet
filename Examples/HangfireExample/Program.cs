@@ -22,5 +22,4 @@ app.MapGet("/generate", (IBackgroundJobClient backgroundJobClient) => {
 app.UseHangfireDashboard();
 app.MapHangfireDashboard();
 
-
 app.Run();
