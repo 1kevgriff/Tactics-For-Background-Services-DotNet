@@ -4,7 +4,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Tactic.WindowsService-0a686aba-c397-4bbc-a488-5efccbf6b33e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
