@@ -54,7 +54,7 @@ public class CleanUpTempFolderService : BackgroundService
                 }
             }
 
-            await Task.Delay(30000, stoppingToken);
+            await Task.Delay(5000, stoppingToken);
         }
     }
 }

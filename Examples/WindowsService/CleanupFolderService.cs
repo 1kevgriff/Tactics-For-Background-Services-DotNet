@@ -26,7 +26,7 @@ public class CleanupFolderService : BackgroundService
 
             // delete any files older than 1 minute in FolderToCheck
             var files = Directory.GetFiles(FolderToCheck, "*.*", SearchOption.AllDirectories)
-                .Where(f => File.GetLastWriteTime(f) < DateTime.Now.AddMinutes(-1));
+                .Where(f => File.GetLastWriteTime(f) < DateTime.Now.AddSeconds(-30));
 
             if (files.Any())
                 _logger.LogInformation("Found {FileCount} files to delete", files.Count());
