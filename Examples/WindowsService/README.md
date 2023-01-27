@@ -128,6 +128,10 @@ At the COMMAND PROMPT (as Administrator), run the command:
 sc create Tactic.WindowsService binPath="{path to your application}\Tactic.WindowsService\publish\Tactic.WindowsService.exe"
 ```
 
+```bash
+sc create Tactic.WindowsServices binPath="C:\repos\Tactics-For-Background-Services-DotNet\Examples\WindowsService\publish\Tactic.WindowsService.exe"
+```
+
 ### Start the Windows Service
 At the COMMAND PROMPT (as Administrator), run the command:
 
