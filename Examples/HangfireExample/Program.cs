@@ -15,8 +15,15 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapGet("/generate", (IBackgroundJobClient backgroundJobClient) => {
-    backgroundJobClient.Schedule<CleanupTempFolderJob>(job => job.Generate(), TimeSpan.FromSeconds(30));
+app.MapGet("/generate-now", (IBackgroundJobClient backgroundJobClient) =>
+{
+    backgroundJobClient.Enqueue<CleanupTempFolderJob>(job => job.Generate());
+});
+
+app.MapGet("/generate-later", (IBackgroundJobClient backgroundJobClient) =>
+{
+    backgroundJobClient.Schedule<CleanupTempFolderJob>(job => job.Generate(),
+        TimeSpan.FromSeconds(15));
 });
 
 app.UseHangfireDashboard();

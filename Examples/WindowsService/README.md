@@ -125,7 +125,7 @@ This will create a publish folder with the compiled application.
 At the COMMAND PROMPT (as Administrator), run the command:
 
 ```bash
-sc create Tactic.WindowsService binPath= "{path to your application}\Tactic.WindowsService\publish\Tactic.WindowsService.exe"
+sc create Tactic.WindowsService binPath="{path to your application}\Tactic.WindowsService\publish\Tactic.WindowsService.exe"
 ```
 
 ### Start the Windows Service

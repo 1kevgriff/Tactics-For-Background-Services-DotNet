@@ -1,6 +1,7 @@
 public class CleanUpTempFolderService : BackgroundService
 {
     private readonly ILogger<CleanUpTempFolderService> _logger;
+    private int Delay = 15000;
 
     public CleanUpTempFolderService(ILogger<CleanUpTempFolderService> logger)
     {
@@ -20,14 +21,6 @@ public class CleanUpTempFolderService : BackgroundService
         }
 
         _logger.LogInformation("Temp directory is located at {tempDirectory}", tempDirectory);
-
-        stoppingToken.Register(async () =>
-        {
-            _logger.LogInformation("CleanUpTempFolderService background task is stopping.");
-            await Task.Delay(10000);
-            _logger.LogInformation("CleanUpTempFolderService background task is stopped.");
-        });
-
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -54,7 +47,7 @@ public class CleanUpTempFolderService : BackgroundService
                 }
             }
 
-            await Task.Delay(5000, stoppingToken);
+            await Task.Delay(Delay, stoppingToken);
         }
     }
 }
