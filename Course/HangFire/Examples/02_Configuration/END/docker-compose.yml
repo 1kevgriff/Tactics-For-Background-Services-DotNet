@@ -1,0 +1,23 @@
+version: '3.7'
+name: TacticsHangFire
+services:
+  mssql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tactics-mssql
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: MyS3cr3tP@ssw0rd
+      MSSQL_PID: Developer
+      MSSQL_USER: tactics
+      MSSQL_PASSWORD: tactics!password
+      MSSQL_DB: Tactics
+    ports:
+      - "1435:1433"
+    volumes:
+      - ${USERPROFILE:-${HOME}}/_tactics/mssql/data:/var/opt/mssql/data
+      - ${USERPROFILE:-${HOME}}/_tactics/mssql/logs:/var/opt/mssql/log
+      - ${USERPROFILE:-${HOME}}/_tactics/mssql/backup:/var/opt/mssql/backup
+      - ./scripts/setup.sql:/setup.sql
+    command: /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -i /setup.sql && /opt/mssql/bin/sqlservr"
