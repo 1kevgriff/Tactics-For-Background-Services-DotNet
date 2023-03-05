@@ -1,0 +1,17 @@
+version: '3.7'
+name: tactics
+services:
+  mssql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tactics-mssql
+    env_file:
+      - docker.env
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./_tactics/mssql/data:/var/opt/mssql/data
+      - ./_tactics/mssql/logs:/var/opt/mssql/log
+      - ./_tactics/mssql/backup:/var/opt/mssql/backup
+      - ./_tactics/mssql/secrets:/var/opt/mssql/secrets

@@ -7,15 +7,6 @@ BEGIN
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='MyTable' and xtype='U')
-BEGIN
-    CREATE TABLE MyTable (
-        Id INT PRIMARY KEY,
-        Name VARCHAR(50)
-    );
-END
-GO
-
 IF NOT EXISTS (SELECT * FROM sys.sql_logins WHERE name = '$(MSSQL_USER)')
 BEGIN
     CREATE LOGIN $(MSSQL_USER) WITH PASSWORD = '$(MSSQL_PASSWORD)';
