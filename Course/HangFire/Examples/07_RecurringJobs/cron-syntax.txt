@@ -1,0 +1,132 @@
+Example:
+0   1   *   *   *   
+^   ^   ^   ^   ^  
+|   |   |   |   |  
+|   |   |   |   |
+|   |   |   |   Day of the week
+|   |   |   Month
+|   |   Day of the month
+|   Hour
+Minute
+
+Meaning: runs 1:00am every day, every month, every day of the week
+`*` means `every` or `any` value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example: * * * * *
+Meaning: runs every minutes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example: */7 * * * *
+Meaning: runs every 7 minutes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example: 0 0 * 4 *
+Meaning: runs 12:00am every day of April
+
+Months: 1-12
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example: 30 15 * * 2
+Meaning: runs 3:30pm every Tuesday
+
+Days of Week: 0-6 (0 is Sunday)
+
+
+Learn more at: https://crontab.guru
