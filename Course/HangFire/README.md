@@ -34,16 +34,12 @@ done
 done
 
 ## Module: Recurring Jobs
-
-## Module: Naming Recurring Jobs
+done
 
 ## Module: Triggering Recurring Jobs
+done
 
 ## Module: DI vs. Static Methods
-
-
-
-## Module: Monitoring Jobs
 
 ## Module: Continuations
 
