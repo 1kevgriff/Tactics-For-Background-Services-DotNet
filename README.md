@@ -6,7 +6,7 @@ If you're here, you might be interested in my courses on building background ser
 ### HangFire
 [Building Background Services in .NET with Hangfire](https://www.udemy.com/course/building-background-services-in-net-with-hangfire/?referralCode=ADE705B8BB4A44749A7D) (Hosted on Udemy)  
 
-Materials for the course are [freely available](/course/hangfire/README.md) even if you don't buy the course.
+Materials for the course are [freely available](/Course/HangFire/README.md) even if you don't buy the course.
 
 ## Talk and Supporting Materials
 Supporting materials for my "Tactics for Building Background Services in .NET" talk
