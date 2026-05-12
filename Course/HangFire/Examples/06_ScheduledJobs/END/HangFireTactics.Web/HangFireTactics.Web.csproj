@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="HangFire" Version="1.7.33" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="7.0.0" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.8" />
     <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
   </ItemGroup>
 
