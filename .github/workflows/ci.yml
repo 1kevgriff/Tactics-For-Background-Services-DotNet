@@ -1,0 +1,64 @@
+name: CI Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 11
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+
+      - name: Setup .NET 8 (for Azure Functions)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies (Course examples)
+        run: |
+          for proj in $(find Course/HangFire/Examples -name "*.csproj"); do
+            echo "Restoring $proj..."
+            dotnet restore "$proj"
+          done
+
+      - name: Restore dependencies (Examples)
+        run: |
+          for proj in $(find Examples -name "*.csproj" ! -name "*.sln"); do
+            echo "Restoring $proj..."
+            dotnet restore "$proj"
+          done
+
+      - name: Build Course examples
+        run: |
+          for proj in $(find Course/HangFire/Examples -name "*.csproj"); do
+            echo "Building $proj..."
+            dotnet build "$proj" --configuration Release --no-restore
+          done
+
+      - name: Build Examples
+        run: |
+          for proj in $(find Examples -name "*.csproj" ! -name "*.sln"); do
+            echo "Building $proj..."
+            dotnet build "$proj" --configuration Release --no-restore
+          done
+
+      - name: Run tests (if any exist)
+        run: |
+          test_projects=$(find . -name "*Tests.csproj" -o -name "*Test.csproj" 2>/dev/null)
+          if [ -n "$test_projects" ]; then
+            for proj in $test_projects; do
+              echo "Running tests in $proj..."
+              dotnet test "$proj" --configuration Release --no-build --verbosity normal
+            done
+          else
+            echo "No test projects found"
+          fi

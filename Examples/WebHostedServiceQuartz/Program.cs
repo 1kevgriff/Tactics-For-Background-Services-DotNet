@@ -6,11 +6,10 @@ builder.Services.AddLogging(configure => configure.AddConsole());
 
 builder.Services.AddQuartz(q =>
     {
-        q.UseMicrosoftDependencyInjectionJobFactory();
-
         // base Quartz scheduler, job and trigger configuration
         var jobKey = new JobKey("CleanUpTempFolderJob");
-        q.AddJob<CleanUpTempFolderJob>(jobKey, job => job
+        q.AddJob<CleanUpTempFolderJob>(job => job
+            .WithIdentity(jobKey)
             .StoreDurably()
             .DisallowConcurrentExecution()
             .WithDescription("Cleans up the temp folder"));
@@ -21,7 +20,7 @@ builder.Services.AddQuartz(q =>
             .WithCronSchedule(cronEvery15Seconds)); // every minute
     });
 
-builder.Services.AddQuartzServer(options =>
+builder.Services.AddQuartzHostedService(options =>
     {
         // when shutting down we want jobs to complete gracefully
         options.WaitForJobsToComplete = true;

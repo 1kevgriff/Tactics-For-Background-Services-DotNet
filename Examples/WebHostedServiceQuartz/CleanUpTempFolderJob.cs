@@ -15,7 +15,7 @@ public class CleanUpTempFolderJob : IJob
         _logger.LogInformation("Temp directory is {tempDirectory}", _tempDirectory);
     }
 
-    public Task Execute(IJobExecutionContext context)
+    public ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Executing job {jobKey}", context.JobDetail.Key);
 
@@ -47,6 +47,6 @@ public class CleanUpTempFolderJob : IJob
 
         _logger.LogInformation("Finished executing job {jobKey}", context.JobDetail.Key);
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }
