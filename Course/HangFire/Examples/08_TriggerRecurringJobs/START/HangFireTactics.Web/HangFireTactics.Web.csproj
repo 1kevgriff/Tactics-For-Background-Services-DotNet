@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="HangFire" Version="1.8.25" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.2" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="11.0.0" />
     <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
   </ItemGroup>
