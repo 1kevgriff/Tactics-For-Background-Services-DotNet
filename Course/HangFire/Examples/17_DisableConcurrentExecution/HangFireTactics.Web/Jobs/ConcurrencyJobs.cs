@@ -26,7 +26,7 @@ public class ConcurrencyJobs
         _logger.LogInformation("[{Id}] Finished singleton job", id);
     }
 
-    [DisableConcurrentExecution(timeoutInSeconds: 60)]
+    [DisableConcurrentExecution("tenant:{0}", 60)]
     public void PerTenantJob(string tenantId, string taskId)
     {
         _logger.LogInformation("[{Tenant}:{Task}] Starting per-tenant job...", tenantId, taskId);

@@ -1,5 +1,3 @@
-using Hangfire;
-
 namespace HangFireTactics.Web.Jobs;
 
 public class LongRunningJobs
@@ -11,7 +9,7 @@ public class LongRunningJobs
         _logger = logger;
     }
 
-    public void LongJobWithCancellation(IJobCancellationToken cancellationToken)
+    public void LongJobWithCancellation(CancellationToken cancellationToken)
     {
         for (var i = 1; i <= 30; i++)
         {

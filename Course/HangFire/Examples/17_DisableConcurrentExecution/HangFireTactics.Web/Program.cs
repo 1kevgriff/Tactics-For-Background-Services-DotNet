@@ -39,7 +39,7 @@ app.MapGet("/per-tenant", (IBackgroundJobClient client) =>
     client.Enqueue<ConcurrencyJobs>(j => j.PerTenantJob("acme", "task-2"));
     client.Enqueue<ConcurrencyJobs>(j => j.PerTenantJob("contoso", "task-1"));
     client.Enqueue<ConcurrencyJobs>(j => j.PerTenantJob("contoso", "task-2"));
-    return "Enqueued 4 jobs - all wait for lock (same method signature)";
+    return "Enqueued 4 jobs using 'tenant:{0}' resource - acme jobs run serially, contoso jobs run serially, but acme and contoso can run in parallel";
 });
 
 app.Run();

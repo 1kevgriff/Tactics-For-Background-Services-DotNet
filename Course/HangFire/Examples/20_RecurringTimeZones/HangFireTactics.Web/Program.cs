@@ -31,27 +31,25 @@ app.MapGet("/setup", (IRecurringJobManager manager) =>
 {
     var eastern = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
     var pacific = TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles");
-    var utc = TimeZoneInfo.Utc;
 
     manager.AddOrUpdate<ScheduledJobs>(
         "report-utc",
         j => j.DailyReport("UTC"),
-        "* * * * *",
-        new RecurringJobOptions { TimeZone = utc });
+        "0 9 * * *");
 
     manager.AddOrUpdate<ScheduledJobs>(
         "report-eastern",
         j => j.DailyReport("Eastern"),
-        "* * * * *",
+        "0 9 * * *",
         new RecurringJobOptions { TimeZone = eastern });
 
     manager.AddOrUpdate<ScheduledJobs>(
         "report-pacific",
         j => j.DailyReport("Pacific"),
-        "* * * * *",
+        "0 9 * * *",
         new RecurringJobOptions { TimeZone = pacific });
 
-    return "Created 3 recurring jobs with different time zones (running every minute for demo)";
+    return "Created 3 recurring jobs at 9 AM daily - check /hangfire Recurring Jobs page to see different 'Next execution' times based on time zones";
 });
 
 app.Run();

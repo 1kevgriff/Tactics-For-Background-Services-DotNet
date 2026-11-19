@@ -33,8 +33,8 @@ app.MapGet("/", () => """
 
 app.MapGet("/long-job", (IBackgroundJobClient client) =>
 {
-    client.Enqueue<LongRunningJobs>(j => j.LongJobWithCancellation(JobCancellationToken.Null));
-    return "Started 30-step job with IJobCancellationToken - stops gracefully on shutdown";
+    client.Enqueue<LongRunningJobs>(j => j.LongJobWithCancellation(CancellationToken.None));
+    return "Started 30-step job with CancellationToken - stops gracefully on shutdown";
 });
 
 app.MapGet("/async-job", (IBackgroundJobClient client) =>
