@@ -24,17 +24,10 @@ app.MapPost("/tenants/{tenantId}/sync", (IRecurringJobManager manager, string te
     var jobId = $"sync-{tenantId}";
     var cronExpression = cron ?? "*/5 * * * *";
     
-    try
-    {
-        manager.AddOrUpdate<TenantJobs>(
-            jobId,
-            j => j.SyncTenantData(tenantId),
-            cronExpression);
-    }
-    catch (ArgumentException ex)
-    {
-        return Results.BadRequest(new { message = $"Invalid cron expression '{cronExpression}'", error = ex.Message });
-    }
+    manager.AddOrUpdate<TenantJobs>(
+        jobId,
+        j => j.SyncTenantData(tenantId),
+        cronExpression);
     
     return Results.Ok(new { 
         message = $"Created/updated sync job for tenant {tenantId}",
@@ -48,17 +41,10 @@ app.MapPost("/tenants/{tenantId}/report", (IRecurringJobManager manager, string 
     var jobId = $"report-{tenantId}";
     var cronExpression = cron ?? "0 8 * * *";
     
-    try
-    {
-        manager.AddOrUpdate<TenantJobs>(
-            jobId,
-            j => j.GenerateTenantReport(tenantId),
-            cronExpression);
-    }
-    catch (ArgumentException ex)
-    {
-        return Results.BadRequest(new { message = $"Invalid cron expression '{cronExpression}'", error = ex.Message });
-    }
+    manager.AddOrUpdate<TenantJobs>(
+        jobId,
+        j => j.GenerateTenantReport(tenantId),
+        cronExpression);
     
     return Results.Ok(new {
         message = $"Created/updated report job for tenant {tenantId}",
