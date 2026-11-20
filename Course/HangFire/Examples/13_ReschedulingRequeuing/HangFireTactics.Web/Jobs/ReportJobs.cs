@@ -1,3 +1,5 @@
+using Hangfire;
+
 namespace HangFireTactics.Web.Jobs;
 
 public class ReportJobs
@@ -16,6 +18,8 @@ public class ReportJobs
         _logger.LogInformation("Report {ReportId} completed!", reportId);
     }
 
+    // No automatic retries, so the job goes straight to Failed and can be requeued by hand
+    [AutomaticRetry(Attempts = 0)]
     public void FailingJob(string jobId)
     {
         _logger.LogInformation("Starting failing job {JobId}...", jobId);

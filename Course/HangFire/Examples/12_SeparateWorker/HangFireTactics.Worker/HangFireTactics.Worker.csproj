@@ -15,7 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The Worker references Web only for the job types; it has its own configuration -->
     <ProjectReference Include="..\HangFireTactics.Web\HangFireTactics.Web.csproj" />
   </ItemGroup>
+
+  <!-- Keep Web's appsettings*.json out of the Worker publish output (avoids NETSDK1152) -->
+  <Target Name="ExcludeWebAppSettingsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+                             Condition="$([System.String]::Copy('%(ResolvedFileToPublish.FullPath)').Contains('HangFireTactics.Web')) And $([System.String]::Copy('%(ResolvedFileToPublish.Filename)').StartsWith('appsettings'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>

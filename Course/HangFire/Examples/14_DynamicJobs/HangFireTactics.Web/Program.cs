@@ -24,10 +24,17 @@ app.MapPost("/tenants/{tenantId}/sync", (IRecurringJobManager manager, string te
     var jobId = $"sync-{tenantId}";
     var cronExpression = cron ?? "*/5 * * * *";
     
-    manager.AddOrUpdate<TenantJobs>(
-        jobId,
-        j => j.SyncTenantData(tenantId),
-        cronExpression);
+    try
+    {
+        manager.AddOrUpdate<TenantJobs>(
+            jobId,
+            j => j.SyncTenantData(tenantId),
+            cronExpression);
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { message = $"Invalid cron expression '{cronExpression}'", error = ex.Message });
+    }
     
     return Results.Ok(new { 
         message = $"Created/updated sync job for tenant {tenantId}",
@@ -41,10 +48,17 @@ app.MapPost("/tenants/{tenantId}/report", (IRecurringJobManager manager, string 
     var jobId = $"report-{tenantId}";
     var cronExpression = cron ?? "0 8 * * *";
     
-    manager.AddOrUpdate<TenantJobs>(
-        jobId,
-        j => j.GenerateTenantReport(tenantId),
-        cronExpression);
+    try
+    {
+        manager.AddOrUpdate<TenantJobs>(
+            jobId,
+            j => j.GenerateTenantReport(tenantId),
+            cronExpression);
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { message = $"Invalid cron expression '{cronExpression}'", error = ex.Message });
+    }
     
     return Results.Ok(new {
         message = $"Created/updated report job for tenant {tenantId}",
@@ -67,11 +81,16 @@ app.MapDelete("/tenants/{tenantId}/report", (IRecurringJobManager manager, strin
     return Results.Ok(new { message = $"Removed report job for tenant {tenantId}", jobId });
 });
 
-app.MapPost("/tenants/{tenantId}/trigger-sync", (IRecurringJobManager manager, string tenantId) =>
+app.MapPost("/tenants/{tenantId}/trigger-sync", (IRecurringJobManagerV2 manager, string tenantId) =>
 {
     var jobId = $"sync-{tenantId}";
-    manager.Trigger(jobId);
-    return Results.Ok(new { message = $"Triggered sync job for tenant {tenantId}", jobId });
+
+    // TriggerJob returns null when no recurring job has this id
+    var backgroundJobId = manager.TriggerJob(jobId);
+    if (backgroundJobId is null)
+        return Results.NotFound(new { message = $"No sync job for tenant {tenantId}", jobId });
+
+    return Results.Ok(new { message = $"Triggered sync job for tenant {tenantId}", jobId, backgroundJobId });
 });
 
 app.MapGet("/tenants/setup-demo", (IRecurringJobManager manager) =>

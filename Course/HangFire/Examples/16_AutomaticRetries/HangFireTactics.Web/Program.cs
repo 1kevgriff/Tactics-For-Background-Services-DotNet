@@ -21,22 +21,19 @@ app.MapGet("/", () => "Automatic Retries Demo - visit /hangfire to watch retry b
 
 app.MapGet("/default-retry", (IBackgroundJobClient client) =>
 {
-    RetryJobs.ResetCounters();
-    client.Enqueue<RetryJobs>(j => j.DefaultRetryJob());
-    return "Enqueued job with default retry (10 attempts, exponential backoff)";
+    client.Enqueue<RetryJobs>(j => j.DefaultRetryJob(null));
+    return "Enqueued job with default retry (10 retries after the first attempt, exponential backoff)";
 });
 
 app.MapGet("/custom-retry", (IBackgroundJobClient client) =>
 {
-    RetryJobs.ResetCounters();
-    client.Enqueue<RetryJobs>(j => j.CustomRetryJob());
+    client.Enqueue<RetryJobs>(j => j.CustomRetryJob(null));
     return "Enqueued job with [AutomaticRetry(Attempts=3, DelaysInSeconds=[5,10,30])]";
 });
 
 app.MapGet("/no-retry", (IBackgroundJobClient client) =>
 {
-    RetryJobs.ResetCounters();
-    client.Enqueue<RetryJobs>(j => j.NoRetryJob());
+    client.Enqueue<RetryJobs>(j => j.NoRetryJob(null));
     return "Enqueued job with [AutomaticRetry(Attempts=0)] - goes straight to Failed";
 });
 

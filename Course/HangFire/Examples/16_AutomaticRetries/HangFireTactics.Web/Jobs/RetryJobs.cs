@@ -1,46 +1,41 @@
 using Hangfire;
+using Hangfire.Server;
 
 namespace HangFireTactics.Web.Jobs;
 
 public class RetryJobs
 {
     private readonly ILogger<RetryJobs> _logger;
-    private static int _defaultAttempt = 0;
-    private static int _customAttempt = 0;
-    private static int _noRetryAttempt = 0;
 
     public RetryJobs(ILogger<RetryJobs> logger)
     {
         _logger = logger;
     }
 
-    public void DefaultRetryJob()
+    // Hangfire stores RetryCount per job, so each job reports its own attempt number
+    private static int Attempt(PerformContext? context) =>
+        (context?.GetJobParameter<int>("RetryCount") ?? 0) + 1;
+
+    public void DefaultRetryJob(PerformContext? context)
     {
-        _defaultAttempt++;
-        _logger.LogWarning("Default retry job attempt {Attempt} (default: 10 retries)", _defaultAttempt);
-        throw new Exception($"Intentional failure - attempt {_defaultAttempt}");
+        var jobId = context?.BackgroundJob.Id;
+        _logger.LogWarning("Default retry job {JobId} attempt {Attempt} (default: 10 retries)", jobId, Attempt(context));
+        throw new Exception($"Intentional failure - job {jobId}, attempt {Attempt(context)}");
     }
 
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 5, 10, 30 })]
-    public void CustomRetryJob()
+    public void CustomRetryJob(PerformContext? context)
     {
-        _customAttempt++;
-        _logger.LogWarning("Custom retry job attempt {Attempt} (3 retries: 5s, 10s, 30s)", _customAttempt);
-        throw new Exception($"Intentional failure - attempt {_customAttempt}");
+        var jobId = context?.BackgroundJob.Id;
+        _logger.LogWarning("Custom retry job {JobId} attempt {Attempt} (3 retries: 5s, 10s, 30s)", jobId, Attempt(context));
+        throw new Exception($"Intentional failure - job {jobId}, attempt {Attempt(context)}");
     }
 
     [AutomaticRetry(Attempts = 0)]
-    public void NoRetryJob()
+    public void NoRetryJob(PerformContext? context)
     {
-        _noRetryAttempt++;
-        _logger.LogWarning("No retry job attempt {Attempt} (goes straight to failed)", _noRetryAttempt);
-        throw new Exception("This job will not retry");
-    }
-
-    public static void ResetCounters()
-    {
-        _defaultAttempt = 0;
-        _customAttempt = 0;
-        _noRetryAttempt = 0;
+        var jobId = context?.BackgroundJob.Id;
+        _logger.LogWarning("No retry job {JobId} attempt {Attempt} (goes straight to failed)", jobId, Attempt(context));
+        throw new Exception($"Job {jobId} will not retry");
     }
 }
