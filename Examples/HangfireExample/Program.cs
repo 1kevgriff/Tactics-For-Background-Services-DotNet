@@ -6,7 +6,11 @@ builder.Services.AddHangfire(config =>
     config.UseSqlServerStorage("Server=.;Database=HangfireDemo;Trusted_Connection=True;");
 
     var cronEvery30Seconds = "*/30 * * * * *";
-    RecurringJob.AddOrUpdate<CleanupTempFolderJob>(job => job.Execute(), cronEvery30Seconds);
+    RecurringJob.AddOrUpdate<CleanupTempFolderJob>(
+        "cleanup-temp-folder",
+        job => job.Execute(),
+        cronEvery30Seconds,
+        new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
 });
 
 builder.Services.AddHangfireServer();

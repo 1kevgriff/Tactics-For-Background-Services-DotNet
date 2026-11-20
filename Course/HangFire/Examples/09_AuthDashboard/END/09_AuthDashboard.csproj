@@ -14,11 +14,14 @@
 
   <ItemGroup>
     <PackageReference Include="HangFire" Version="1.8.25" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="HangFire.Storage.SQLite" Version="0.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="11.0.0" />
+    <!-- Hangfire.Storage.SQLite pins a vulnerable native SQLite (GHSA-2m69-gcr7-jv3q); pin a patched build -->
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.14" />
   </ItemGroup>
 </Project>

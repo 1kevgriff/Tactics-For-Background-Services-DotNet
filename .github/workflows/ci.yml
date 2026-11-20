@@ -6,66 +6,47 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup .NET 11
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '11.0.x'
 
-      - name: Setup .NET 8 (for Azure Functions)
-        uses: actions/setup-dotnet@v4
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
         with:
-          dotnet-version: '8.0.x'
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
 
-      - name: Restore dependencies (Course examples)
+      - name: Build all projects
         run: |
-          for proj in $(find Course/HangFire/Examples -name "*.csproj"); do
-            echo "Restoring $proj..."
-            dotnet restore "$proj"
-          done
-
-      - name: Restore dependencies (Examples)
-        run: |
-          for proj in $(find Examples -name "*.csproj" ! -name "*.sln"); do
-            echo "Restoring $proj..."
-            dotnet restore "$proj"
-          done
-
-      - name: Build Course examples
-        run: |
-          for proj in $(find Course/HangFire/Examples -name "*.csproj"); do
+          for proj in $(find Course/HangFire/Examples Examples -name "*.csproj"); do
             echo "Building $proj..."
-            dotnet build "$proj" --configuration Release --no-restore
+            dotnet build "$proj" --configuration Release
           done
 
-      - name: Build Examples
+      - name: Run tests
         run: |
-          for proj in $(find Examples -name "*.csproj" ! -name "*.sln"); do
-            echo "Building $proj..."
-            dotnet build "$proj" --configuration Release --no-restore
+          for proj in $(find . -name "*Tests.csproj"); do
+            echo "Running tests in $proj..."
+            dotnet test --project "$proj" --configuration Release
           done
 
-      - name: Run tests (if any exist)
-        run: |
-          test_projects=$(find . -name "*Tests.csproj" -o -name "*Test.csproj" 2>/dev/null)
-          if [ -n "$test_projects" ]; then
-            for proj in $test_projects; do
-              echo "Running tests in $proj..."
-              dotnet test "$proj" --configuration Release --no-build --verbosity normal
-            done
-          else
-            echo "No test projects found"
-          fi
-
-# Note: Smoke tests with SQL Server were considered but not implemented because:
-# 1. Installing mssql-tools on GitHub runners requires complex APT key setup that's fragile
-# 2. The main runtime issue (missing Microsoft.Data.SqlClient) is now caught at build time
-#    via the explicit package reference - if someone removes it, restore/build will still
-#    succeed but runtime will fail. Consider adding an integration test project that
-#    actually connects to SQL Server if runtime verification becomes critical.
+# No SQL Server runtime check: a missing Microsoft.Data.SqlClient reference only fails at runtime.
