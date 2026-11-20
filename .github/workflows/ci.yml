@@ -1,0 +1,52 @@
+name: CI Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET 11
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Build all projects
+        run: |
+          for proj in $(find Course/HangFire/Examples Examples -name "*.csproj"); do
+            echo "Building $proj..."
+            dotnet build "$proj" --configuration Release
+          done
+
+      - name: Run tests
+        run: |
+          for proj in $(find . -name "*Tests.csproj"); do
+            echo "Running tests in $proj..."
+            dotnet test --project "$proj" --configuration Release
+          done
+
+# No SQL Server runtime check: a missing Microsoft.Data.SqlClient reference only fails at runtime.

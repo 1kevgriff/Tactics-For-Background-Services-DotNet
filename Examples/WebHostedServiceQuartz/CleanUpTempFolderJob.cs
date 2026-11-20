@@ -2,37 +2,38 @@ using Quartz;
 
 public class CleanUpTempFolderJob : IJob
 {
-    private ILogger<CleanUpTempFolderJob> _logger;
-    private string _tempDirectory;
+    private readonly ILogger<CleanUpTempFolderJob> _logger;
+    private readonly string _tempDirectory;
 
     public CleanUpTempFolderJob(ILogger<CleanUpTempFolderJob> logger)
     {
         _logger = logger;
+        _tempDirectory = Path.Combine(Path.GetTempPath(), "CleanUpTempFolderService");
 
-        var tempDirectory = Path.GetTempPath();
-        _tempDirectory = Path.Combine(tempDirectory, "CleanUpTempFolderService");
-
-        _logger.LogInformation("Temp directory is {tempDirectory}", _tempDirectory);
+        // Quartz creates a new job instance for every fire, so keep this quiet
+        _logger.LogDebug("Temp directory is {tempDirectory}", _tempDirectory);
     }
 
-    public Task Execute(IJobExecutionContext context)
+    public ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Executing job {jobKey}", context.JobDetail.Key);
+        _logger.LogInformation(
+            "Executing job {jobKey} (scheduled {scheduledFireTimeUtc}, fired {fireTimeUtc})",
+            context.JobDetail.Key, context.ScheduledFireTimeUtc, context.FireTimeUtc);
 
-        if (!Directory.Exists(_tempDirectory))
-        {
-            _logger.LogInformation("Creating temp directory {tempDirectory}", _tempDirectory);
-            Directory.CreateDirectory(_tempDirectory);
-        }
+        // CreateDirectory does nothing if the directory already exists
+        Directory.CreateDirectory(_tempDirectory);
 
         var files = Directory.GetFiles(_tempDirectory);
 
-        if (files.Any())
+        if (files.Length > 0)
         {
             _logger.LogInformation("Found {fileCount} files in temp directory", files.Length);
 
             foreach (var file in files)
             {
+                // stop early if the scheduler interrupts the job or shuts down
+                cancellationToken.ThrowIfCancellationRequested();
+
                 try
                 {
                     File.Delete(file);
@@ -47,6 +48,6 @@ public class CleanUpTempFolderJob : IJob
 
         _logger.LogInformation("Finished executing job {jobKey}", context.JobDetail.Key);
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

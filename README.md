@@ -18,9 +18,9 @@ Supporting materials for my "Tactics for Building Background Services in .NET" t
 
 
 #### Windows Services
-* [Creating a Windows Service using BackgroundService](https://learn.microsoft.com/en-us/dotnet/core/extensions/windows-service)
+* [Creating a Windows Service using BackgroundService](https://learn.microsoft.com/dotnet/core/extensions/windows-service)
 
 #### Hosted Services
-* [Hosted Services](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio)
-* [Background Tasks with IHostedService](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/background-tasks-with-ihostedservice)
+* [Hosted Services](https://learn.microsoft.com/aspnet/core/fundamentals/host/hosted-services)
+* [Background Tasks with IHostedService](https://learn.microsoft.com/dotnet/architecture/microservices/multi-container-microservice-net-applications/background-tasks-with-ihostedservice)
 
