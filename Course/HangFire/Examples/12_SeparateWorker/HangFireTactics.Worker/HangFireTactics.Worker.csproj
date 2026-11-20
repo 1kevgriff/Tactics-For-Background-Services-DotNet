@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Hangfire.Core" Version="1.8.25" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.25" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
