@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Quartz" Version="4.0.1" />
+    <PackageReference Include="Quartz" Version="4.8.0" />
   </ItemGroup>
 
 </Project>
