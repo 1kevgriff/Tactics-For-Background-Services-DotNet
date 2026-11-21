@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup .NET 11
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '11.0.x'
 
