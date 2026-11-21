@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="11.0.0" />
     <!-- Hangfire.Storage.SQLite pins a vulnerable native SQLite (GHSA-2m69-gcr7-jv3q); pin a patched build -->
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.14" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
   </ItemGroup>
 
 </Project>
